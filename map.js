@@ -32,10 +32,14 @@ $('#zoomin').on('click', e => {
 })
 $('.mapbutton').on('click',event =>{
   if(event.target.classList.contains('mapbutton')){
-    $('#modal').html(template(locations[event.target.dataset.id]))
+    $('#modal-content').html(template(locations[event.target.dataset.id]))
     $('#modal').toggle()
   }
 })
+$('#closemodal').on('click', e=>{
+  $('#modal').hide()
+})
+zoom(.5)
 //get full size of image on page for conversion to map coordinates
 //compare clicked converted coordinates to center of image
 //
