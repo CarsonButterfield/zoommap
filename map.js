@@ -33,11 +33,11 @@ $('#zoomin').on('click', e => {
 $('.mapbutton').on('click',event =>{
   if(event.target.classList.contains('mapbutton')){
     $('#modal-content').html(template(locations[event.target.dataset.id]))
-    $('#modal').toggle()
+    $('#modal, #backgroundbutton').show()
   }
 })
-$('#closemodal').on('click', e=>{
-  $('#modal').hide()
+$('#closemodal, #backgroundbutton').on('click', e=>{
+  $('#modal, #backgroundbutton').hide()
 })
 zoom(.5)
 //get full size of image on page for conversion to map coordinates
