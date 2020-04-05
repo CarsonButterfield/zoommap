@@ -7,7 +7,7 @@ const template = location => {
 }
 
 let animating = false;
-const zoom = (val,center) => {
+const zoom = (val) => {
   if(!animating){
   animating = true
   const $map = $('#tmap');
@@ -43,3 +43,32 @@ zoom(.5)
 //get full size of image on page for conversion to map coordinates
 //compare clicked converted coordinates to center of image
 //
+
+// This is all the scroll code
+let startX, startY, scrollLeft, scrollTop
+let isDown = false
+
+const $mapcontainer = $('#mapcontainer');
+$mapcontainer.on('mousedown', e => {
+  isDown = true
+  startX = e.pageX - $mapcontainer.offset().left;
+  startY = e.pageY - $mapcontainer.offset().top;
+  scrollLeft = $mapcontainer.scrollLeft()
+  scrollTop = $mapcontainer.scrollTop()
+})
+$mapcontainer.on('mouseup', e => {
+  isDown = false
+})
+
+$mapcontainer.on("mousemove", e => {
+  if(isDown){
+    e.preventDefault();
+    const x = e.pageX - $mapcontainer.offset().left;
+    const y = e.pageY - $mapcontainer.offset().top
+    const walkX = x - startX;
+    const walkY = y - startY
+
+    $mapcontainer.scrollTop(scrollTop - walkY)
+    $mapcontainer.scrollLeft(scrollLeft - walkX)
+  }
+});
