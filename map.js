@@ -1,3 +1,4 @@
+$(document).ready(() => {
 const template = location => {
   return`
   <h2>${location.title}</h2>
@@ -71,4 +72,4 @@ $mapcontainer.on("mousemove", e => {
     $mapcontainer.scrollTop(scrollTop - walkY)
     $mapcontainer.scrollLeft(scrollLeft - walkX)
   }
-});
+})})
