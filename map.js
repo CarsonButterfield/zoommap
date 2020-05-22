@@ -6,19 +6,29 @@ const template = location => {
   `
 
 }
-
+const coordinates = [] 
+$('.mapbutton').each(function() {
+  coordinates.push(this.coords.split(','))
+})
+console.log(coordinates)
+const $map = $('#tmap');
+const mapWidth = $map.width()
+const mapHeight = $map.height()
+let zoomSize = 1;
 let animating = false;
-const zoom = (val) => {
+const zoom = (direction) => {
+  //false is out, true is in
   if(!animating){
+    direction ? zoomSize += .25 : Math.max(1,zoomSize - .25);
+    console.log(zoomSize)
   animating = true
-  const $map = $('#tmap');
-  $map.width($map.width() * val)
-  $map.height($map.height() * val)
-
+  $map.width(mapWidth * zoomSize)
+  $map.height(mapHeight * zoomSize)
   $('.mapbutton').each(function(i) {
-    let coords = this.coords.split(',')
-    coords = coords.map(coord => coord * val)  
+    console.log({coords:coordinates[i]})
+    coords = coordinates[i].map(coord => coord * zoomSize)  
     this.coords = `${coords[0]},${coords[1]},${coords[2]}`
+    console.log(this.coords)
   })}
 }
 $('#tmap').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
@@ -26,10 +36,10 @@ $('#tmap').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
 })
 
 $('#zoomout').on('click', e => {
-  zoom(.75)
+  zoom(false)
 })
 $('#zoomin').on('click', e => {
-  zoom(1.25)
+  zoom(true)
 })
 $('.mapbutton').on('click',event =>{
   if(event.target.classList.contains('mapbutton')){
