@@ -9,12 +9,13 @@
 			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 				crossorigin="anonymous"></script>
 	<script defer src='./map.js'></script>
-	<link rel="stylesheet" href="/map.css">
+	<link rel="stylesheet" href="map.css">
 </head>
 <body>
 <button id="zoomin">+</button>
 <button id="zoomout">-</button>
 <!-- Mapcontainer must contain the map, the container determines the size of the map on the page-->
+<div id="marker"></div>
 <div id="mapcontainer"> 
 	<img  draggable="false" id="tmap" src="images/MapTop-3000.jpg" alt="" width="3000" height="1184" usemap="#tronconesmap" />
 </div>
@@ -29,7 +30,6 @@
 <a href="http://www.villasmirador.com">www.villasmirador.com</a>
 </p>
 </div>
-<div id="backgroundbutton"></div>
 
 	<div id="modal">
 		<button class="closemodal">X</button>

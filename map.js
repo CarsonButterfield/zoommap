@@ -1,4 +1,11 @@
 $(document).ready(() => {
+
+const $map = $('#tmap');
+const mapWidth = $map.width()
+const mapHeight = $map.height()
+let zoomSize = .15;
+let animating = false;
+let modalIsOpen = false;
 const template = location => {
   return`
   <h2>${location.title}</h2>
@@ -6,26 +13,36 @@ const template = location => {
   `
 
 }
+const checkScroll = () => {
+console.log($mapcontainer.scrollLeft(), $mapcontainer.scrollTop())
+}
 const coordinates = [] 
 $('.mapbutton').each(function() {
   coordinates.push(this.coords.split(','))
 })
-console.log(coordinates)
-const $map = $('#tmap');
-const mapWidth = $map.width()
-const mapHeight = $map.height()
-let zoomSize = 1;
-let animating = false;
+
+const animateMap = (center) => {
+    const width = mapWidth * zoomSize
+    const height = mapHeight * zoomSize
+    
+    const scrollLeft = $mapcontainer.scrollLeft() - (center[0] - ((mapWidth * zoomSize )/ 2))
+    const scrollTop = $mapcontainer.scrollTop() - ( center[1] - ((mapHeight * zoomSize) / 2))
+    console.log({scrollLeft,scrollTop})
+    $mapcontainer.animate({scrollLeft,scrollTop},{duration:300,queue:false})
+    $map.animate({width,height},{duration:300,queue:true,complete:()=>animating=false})
+}
+
 const zoom = (direction) => {
+  checkScroll()
   //false is out, true is in
   if(!animating){
-    direction ? zoomSize += .25 : Math.max(1,zoomSize - .25);
-    console.log(zoomSize)
-  animating = true
-  $map.width(mapWidth * zoomSize)
-  $map.height(mapHeight * zoomSize)
+    console.log('meep')
+    const center = [$map.width()/ 2, $map.height()/2]
+    
+    direction ? zoomSize += .25 : zoomSize = Math.max(.4,zoomSize - .25);
+    animating = zoomSize === 1 ? false : true
+    animateMap(center)
   $('.mapbutton').each(function(i) {
-    console.log({coords:coordinates[i]})
     coords = coordinates[i].map(coord => coord * zoomSize)  
     this.coords = `${coords[0]},${coords[1]},${coords[2]}`
     console.log(this.coords)
@@ -33,6 +50,7 @@ const zoom = (direction) => {
 }
 $('#tmap').on('transitionend webkitTransitionEnd oTransitionEnd', function () {
   animating = false
+  
 })
 
 $('#zoomout').on('click', e => {
@@ -41,16 +59,24 @@ $('#zoomout').on('click', e => {
 $('#zoomin').on('click', e => {
   zoom(true)
 })
+$('#closemodal').on('click', e => {
+  $('#modal').hide(300)
+  modalIsOpen = false
+})
 $('.mapbutton').on('click',event =>{
-  if(event.target.classList.contains('mapbutton')){
-    $('#modal-content').html(template(locations[event.target.dataset.id]))
-    $('#modal, #backgroundbutton').show()
-  }
+    if(modalIsOpen){
+      $('#modal').hide(300, ()=> {$('#modal-content').html(template(locations[event.target.dataset.id]))})
+      $('#modal').show(300)
+    }
+    else{
+      modalIsOpen = true
+      $('#modal-content').html(template(locations[event.target.dataset.id]))
+      $('#modal').show(300)
+    }
+  
 })
-$('#closemodal, #backgroundbutton').on('click', e=>{
-  $('#modal, #backgroundbutton').hide()
-})
-zoom(.5)
+
+
 //get full size of image on page for conversion to map coordinates
 //compare clicked converted coordinates to center of image
 //
@@ -82,4 +108,6 @@ $mapcontainer.on("mousemove", e => {
     $mapcontainer.scrollTop(scrollTop - walkY)
     $mapcontainer.scrollLeft(scrollLeft - walkX)
   }
-})})
+})
+zoom(true)
+})
